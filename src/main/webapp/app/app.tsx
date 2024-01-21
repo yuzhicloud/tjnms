@@ -3,6 +3,7 @@ import './app.scss';
 import 'app/config/dayjs';
 
 import React, { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { Card } from 'reactstrap';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,6 +17,7 @@ import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import ErrorBoundary from 'app/shared/error/error-boundary';
 import { AUTHORITIES } from 'app/config/constants';
 import AppRoutes from 'app/routes';
+import { SidebarProvider } from 'app/modules/sidebarctx/siderbarcontext';
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '');
 
@@ -36,29 +38,35 @@ export const App = () => {
 
   const paddingTop = '60px';
   return (
-    <BrowserRouter basename={baseHref}>
-      <div className="app-container" style={{ paddingTop }}>
-        <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" />
-        <ErrorBoundary>
-          <Header
-            isAuthenticated={isAuthenticated}
-            isAdmin={isAdmin}
-            currentLocale={currentLocale}
-            ribbonEnv={ribbonEnv}
-            isInProduction={isInProduction}
-            isOpenAPIEnabled={isOpenAPIEnabled}
-          />
-        </ErrorBoundary>
-        <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card">
-            <ErrorBoundary>
-              <AppRoutes />
-            </ErrorBoundary>
-          </Card>
-          <Footer />
-        </div>
-      </div>
-    </BrowserRouter>
+    <React.StrictMode>
+      <HelmetProvider>
+        <SidebarProvider>
+          <BrowserRouter basename={baseHref}>
+            <div className="app-container" style={{ paddingTop }}>
+              <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" />
+              <ErrorBoundary>
+                <Header
+                  isAuthenticated={isAuthenticated}
+                  isAdmin={isAdmin}
+                  currentLocale={currentLocale}
+                  ribbonEnv={ribbonEnv}
+                  isInProduction={isInProduction}
+                  isOpenAPIEnabled={isOpenAPIEnabled}
+                />
+              </ErrorBoundary>
+              <div className="container-fluid view-container" id="app-view-container">
+                <Card className="jh-card">
+                  <ErrorBoundary>
+                    <AppRoutes />
+                  </ErrorBoundary>
+                </Card>
+                <Footer />
+              </div>
+            </div>
+          </BrowserRouter>
+        </SidebarProvider>
+      </HelmetProvider>
+    </React.StrictMode>
   );
 };
 
